@@ -1,0 +1,41 @@
+#elevator,#empty,#target{
+    -fx-min-height:30;
+	-fx-max-height:30;
+	-fx-min-width:200;
+	-fx-max-width:200;
+	-fx-border-color:#666;
+	-fx-border-width:1;
+	-fx-border-style:solid;
+	-fx-text-fill:#666;
+	-fx-alignment:center;
+}
+#note_c,#note_t,#note_p,#note_s,#fstate,#cFloor,#tFloor,#powerused{
+	-fx-text-fill:#fff;
+}
+#empty{
+	-fx-background-color: #fff;
+}
+#elevator{
+	-fx-border-radius:25px;
+	-fx-border-style:solid;
+	-fx-border-color:#97FFFF;
+	-fx-border-width:2px;
+	-fx-background-color: #666;
+	-fx-text-fill:#97FFFF;
+}
+#target{
+	-fx-background-color: #97FFFF;
+	-fx-text-fill:#333;
+}
+
+#grid{
+	-fx-min-height:630;
+	-fx-max-height:630;
+	-fx-min-width:200;
+	-fx-max-width:200;
+	-fx-background-color: #ccc;
+}
+#flow{
+	-fx-background-color: #666;
+	-fx-padding:10;
+}
