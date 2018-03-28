@@ -1,21 +1,17 @@
 package gui;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
-
-import elevator.MovingState;
 import javafx.animation.AnimationTimer;
 import javafx.application.*;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 /**
  * This class is used for creating nodes and objects which are needed for application 
@@ -49,73 +45,33 @@ public class ElevatorApplication extends Application implements Observer{
 	 */
 	private static final int FLOOR_COUNT = 21;
 	/**
-	 * Create a Label type array named floor
+	 * Create a Label type array named floors
 	 */
-	private Label floor[];
+	private Label floors[][];
+	/**
+	 * Create a Label type array named note
+	 */
+	private Label note[][];
+	/**
+	 * Create a Label type array named content
+	 */
+	private Label content[][];
 	/**
 	 * Create a GridPane named floorGrid
 	 */
 	private GridPane floorGrid;	
 	/**
-	 * Create a FlowPane named flow
+	 * Create a GridPane named contentGrid
 	 */
-	private FlowPane flow;
+	private GridPane contentGrid;
+	/**
+	 * Create a GridPane named totalGrid
+	 */
+	private GridPane totalGrid;
 	/**
 	 * Create a BorderPane named root
 	 */
 	private BorderPane root;
-	/**
-	 * Create a HBox named hbox_c
-	 */
-	private HBox hbox_c;
-	/**
-	 * Create a HBox named hbox_t
-	 */
-	private HBox hbox_t;
-	/**
-	 * Create a HBox named hbox_p
-	 */
-	private HBox hbox_p;
-	/**
-	 * Create a HBox named hbox_p
-	 */
-	private HBox hbox_s;
-	/**
-	 * Create a VBox named vbox
-	 */
-	private VBox vbox;
-	/**
-	 * Create a Label named note_c
-	 */
-	private Label note_c;
-	/**
-	 * Create a Label named note_t
-	 */
-	private Label note_t;
-	/**
-	 * Create a Label named note_p
-	 */
-	private Label note_p;
-	/**
-	 * Create a Label named note_s
-	 */
-	private Label note_s;
-	/**
-	 * Create a Label named fstate
-	 */
-	private Label fstate;
-	/**
-	 * Create a Label named cFloor
-	 */
-	private Label cFloor;
-	/**
-	 * Create a Label named tFloor
-	 */
-	private Label tFloor;
-	/**
-	 * Create a Label named powerused
-	 */
-	private Label powerused;
 	/**
 	 * Create a Simulator object named simulator
 	 */
@@ -131,43 +87,54 @@ public class ElevatorApplication extends Application implements Observer{
 	public void init() throws Exception {
 		// TODO Auto-generated method stub
 		super.init();
-		floor = new Label[FLOOR_COUNT];
-		note_c = new Label("Current Floor is : ");
-		note_t = new Label("Target  Floor  is : ");
-		note_p = new Label("Power  Used  is : ");
-		note_s = new Label("The State  is : ");
 		root = new BorderPane();
-		flow = new FlowPane();
-		vbox = new VBox();
-		hbox_c = new HBox();
-		hbox_t = new HBox();
-		hbox_p = new HBox();
-		hbox_s = new HBox();
-		floorGrid = new GridPane();
+		totalGrid = new GridPane();
 		simulator = new Simulator(this);
-		cFloor = new Label("0");
-		tFloor = new Label();
-		fstate = new Label("Idle");
-		powerused = new Label("0");
 		elevatorAnime = new ElevatorAnimator();
-		
-		for(int i = 0; i<FLOOR_COUNT; i++) {
-			floor[i] = new Label();
-			floor[i].setId("empty");
-			floor[i].setText(String.valueOf(i));
+		ArrayList<Integer> index_e=new ArrayList<>();
+		ArrayList<Integer> index_c=new ArrayList<>();
+		//get index of elevator and content
+		for(int i =0; i<8;i++) {
+			if(i%2==1) {
+				index_c.add(i);
+			}else if(i%2==0) {
+				index_e.add(i);
+			}
 		}
-		floor[0].setId("elevator");
-	
-		floorGrid.setId("grid");
-		flow.setId("flow");
-		note_c.setId("note_c");
-		note_t.setId("note_t");
-		note_p.setId("note_p");
-		note_s.setId("note_s");
-		cFloor.setId("cFloor");
-		tFloor.setId("tFloor");
-		fstate.setId("fstate");
-		powerused.setId("powerused");
+		//initialize 2d array of elevator
+		floors =new Label[4][FLOOR_COUNT];
+		for(int id=0; id<4; id++) {
+			floorGrid = new GridPane();
+			for(int i = 0; i<FLOOR_COUNT; i++) {
+				floors[id][i] = new Label();
+				floors[id][i].setId("empty");
+				floors[id][i].setText(String.valueOf(i));
+				floorGrid.add(floors[id][i], 0, (FLOOR_COUNT-1)-i);
+			}
+			floors[id][0].setId("elevator");
+			totalGrid.add(floorGrid,index_e.get(id),0);
+		}
+		//initialize 2d array of note and content
+		note = new Label[4][4];
+		content = new Label[4][4];
+		for(int id =0; id<4; id++) {
+			contentGrid = new GridPane();
+			for(int i=0; i<4; i++) {
+				note[id][i] = new Label();
+				content[id][i] = new Label();
+				note[id][i].setTextFill(Color.WHITE);
+				content[id][i].setTextFill(Color.WHITE);
+				contentGrid.add(note[id][i], 0, 3-i);
+				contentGrid.add(content[id][i], 1, 3-i);
+			}
+			//set note
+			note[id][3].setText(String.valueOf("Current Floor is : "));
+			note[id][2].setText(String.valueOf("Target  Floor is : "));
+			note[id][1].setText(String.valueOf("Power Used is : "));
+			note[id][0].setText(String.valueOf("The ID is : "));
+			contentGrid.setId("grid");
+			totalGrid.add(contentGrid,index_c.get(id),0);
+		}
 	}
 	/**
 	 * it is used to add nodes to root pane 
@@ -175,19 +142,8 @@ public class ElevatorApplication extends Application implements Observer{
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
-		for(int i =FLOOR_COUNT-1; i>=0; i--) {
-			floorGrid.add(floor[i], 0, (FLOOR_COUNT-1)-i);
-		}
-		hbox_c.getChildren().addAll(note_c,cFloor);
-		hbox_t.getChildren().addAll(note_t,tFloor);
-		hbox_p.getChildren().addAll(note_p,powerused);
-		hbox_s.getChildren().addAll(note_s,fstate);
-		vbox.getChildren().addAll(hbox_c,hbox_t,hbox_p,hbox_s);
-		flow.getChildren().add(vbox);
-		root.setCenter(floorGrid);
-		root.setRight(flow);
-		Scene scene = new Scene(root,500,630);
+		root.setCenter(totalGrid);
+		Scene scene = new Scene(root,1400,630);
 		scene.getStylesheets().add(ElevatorApplication.class.getResource("elevator.css").toExternalForm());
 
 		primaryStage.setScene(scene);
@@ -203,7 +159,7 @@ public class ElevatorApplication extends Application implements Observer{
 	 */
 	@Override 
 	public void update(Observable o,Object arg) {
-		   List<Object> list= (List<Object>)arg;
+		   List<Number> list= (List<Number>)arg;
 		   elevatorAnime.addData(list);	
 	}
 	/**
@@ -211,46 +167,17 @@ public class ElevatorApplication extends Application implements Observer{
 	 * set the time of Animation
 	 */
 	private class ElevatorAnimator extends AnimationTimer{
-		/**
-		 * Create a unchanged long variable named SECOND
-		 */
-		private static final long SECOND = 1000000001;
-		/**
-		 * Create a unchanged long variable named SLOW
-		 */
-		protected static final long SLOW = SECOND/3;
-		/**
-		 * Create a unchanged long variable named NORMAL
-		 */
-		protected static final long NORMAL = SECOND/7;
-		/**
-		 * Create an int variable named targetFloor to store targetFloor
-		 */
-		private int targetFloor;
-		/**
-		 * Create an int variable named currentFloor to store currentFloor
-		 */
-		private int currentFloor;
-		/**
-		 * Create an double variable named powerUsed to store power
-		 */
-		private double powerUsed;
-		/**
-		 * Create an long variable named lastUpdate to store lastUpdate time
-		 */
-		private long lastUpdate = 0;
-		/**
-		 * Create a MovingState object named state 
-		 */
-		private MovingState state;
-		
 		//queue
-		Queue<List<Object>> queue=new LinkedList<>();
+		Queue<List<Number>> queue=new LinkedList<>();
+		//store currentfloor
+		int currentFloors[] = new int[simulator.getElevatorCount()];
+		int targetFloors[] = new int[simulator.getElevatorCount()];
+		double powerUseds[] = new double[simulator.getElevatorCount()];
 		/**
 		 * add the List<Object> to queue
 		 * @param list - which is paseed from update method
 		 */
-		public void addData(List<Object> list) {
+		public void addData(List<Number> list) {
 			//add to gueue
 			queue.add(list);
 		}
@@ -259,43 +186,27 @@ public class ElevatorApplication extends Application implements Observer{
 		 */
 		@Override
 		public void handle(long now) {
-			
 			if(queue.isEmpty()) {
 				return;
 			}
-			else {
-				if(now - lastUpdate >= NORMAL && !String.valueOf(state).equals("SlowUp") && !String.valueOf(state).equals("SlowDown")) {
-					this.showAnimation();
-					lastUpdate = now;
-				}
-				if(now - lastUpdate >= SLOW && (String.valueOf(state).equals("SlowUp") || String.valueOf(state).equals("SlowDown"))){
-					this.showAnimation();
-					lastUpdate = now;
-				}
-				
-				//set content of label
-				cFloor.setText(String.valueOf(currentFloor));
-				tFloor.setText(String.valueOf(targetFloor));
-				powerused.setText(String.valueOf(powerUsed));
-				fstate.setText(String.valueOf(state));
-			}
-		}
-		/**
-		 * set the css style to different floors
-		 */
-		public void showAnimation() {
-			//set id for current floor to empty
-			floor[currentFloor].setId("empty");
 			//poll from queue
-			List<Object> list=queue.poll();
-			//assign new cf, tf, pu
-			currentFloor = (Integer)list.get(0);
-			targetFloor = (Integer)list.get(1);
-			powerUsed = (Double)list.get(2);
-			state = (MovingState)list.get(3);
+			List<Number> list=queue.poll();
+			int id = list.get(3).intValue();
+			//set initialize id for current floor to empty
+			floors[id][currentFloors[id]].setId("empty");
+			//assign new cf, tf, pu, id
+			currentFloors[id] = list.get(0).intValue();
+			targetFloors[id] = list.get(1).intValue();
+			powerUseds[id] = list.get(2).doubleValue();
+			//currentFloors[id] = list.get(0).intValue();
 			//set id for cf and tf
-			floor[targetFloor].setId("target");
-			floor[currentFloor].setId("elevator");
+			floors[id][targetFloors[id]].setId("target");
+			floors[id][currentFloors[id]].setId("elevator");
+			//set content of label
+			content[id][3].setText(String.valueOf(currentFloors[id]));
+			content[id][2].setText(String.valueOf(targetFloors[id]));
+			content[id][1].setText(String.valueOf(powerUseds[id]));
+			content[id][0].setText(String.valueOf(id));
 		}
 	};
 	/**
@@ -305,6 +216,7 @@ public class ElevatorApplication extends Application implements Observer{
 	public void stop() throws Exception {
 		// TODO Auto-generated method stub
 		super.stop();
+		simulator.shutdown();
 	}
 	/**
 	 * Define the main method application launch from here

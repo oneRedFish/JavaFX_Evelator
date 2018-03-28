@@ -60,18 +60,49 @@ public class ElevatorImp extends Observable implements Elevator{
 	 * Create a MovingState object named state
 	 */
 	private MovingState state;
+	/**
+	 * to check whether the threads are delay
+	 */
+	private final boolean delay;
+	/**
+	 * The integer which is used to hold the id of elevator
+	 */
+	private final int ID;
 	
 	/**
 	 * The constructor of ElevatorImp class which is used to initialize MAX_CAPACITY_PERSON and panel
 	 * @param MAX_CAPACITY_PERSON - the max number of people which Elevator can hold
 	 * @param panel - reference to the calling ElevatorPanel
-	 */
-	public ElevatorImp(int MAX_CAPACITY_PERSON,ElevatorPanel panel) {
+	 * @param ID -  The integer which is used to hold the id of elevator
+	 * @param delay - whether the threads are delay
+	 */	
+	public ElevatorImp(int MAX_CAPACITY_PERSON,ElevatorPanel panel,int ID,boolean delay) {
 		if(MAX_CAPACITY_PERSON<0) {
 			throw new IllegalArgumentException("Sorry the CAPACITY cannot be smaller than 0");
 		}
+		if(ID<0 ) {
+			throw new IllegalArgumentException("Sorry the ID cannot be smaller than 0");
+		}
 		this.MAX_CAPACITY_PERSONS=MAX_CAPACITY_PERSON;
 		this.panel=panel;
+		this.ID = ID;
+		this.delay = delay;
+		this.state = MovingState.Idle;
+	}
+	/**
+	 *  
+	 * @param MAX_CAPACITY_PERSON- the max number of people which Elevator can hold
+	 * @param panel- reference to the calling ElevatorPanel
+	 * @param ID The integer which is used to hold the id of elevator
+	 */
+	public ElevatorImp(int MAX_CAPACITY_PERSON,ElevatorPanel panel,int ID) {
+		this( MAX_CAPACITY_PERSON, panel, ID, true);
+		if(MAX_CAPACITY_PERSON<0) {
+			throw new IllegalArgumentException("Sorry the CAPACITY cannot be smaller than 0");
+		}
+		if(ID<0 ) {
+			throw new IllegalArgumentException("Sorry the ID cannot be smaller than 0");
+		}
 	}
 	
 	/**
@@ -80,7 +111,6 @@ public class ElevatorImp extends Observable implements Elevator{
 	 */
 	@Override
 	public void moveTo(int floor) {
-		state = MovingState.Idle;
 		while(currentFloor!=floor) {
 			   switch(getState()) {
 				   case Idle:
@@ -142,7 +172,7 @@ public class ElevatorImp extends Observable implements Elevator{
 			   }
 			   //set observers
 			   setChanged();
-			   notifyObservers(Arrays.asList(currentFloor, floor, powerUsed,state));
+			   notifyObservers(Arrays.asList(currentFloor, floor, powerUsed, ID));
 		}
 	}
 	/**
@@ -150,12 +180,10 @@ public class ElevatorImp extends Observable implements Elevator{
 	 */
 	@Override
 	public void addPersons(int persons) {
-		if(persons<0 || persons==0 || persons+capacity>MAX_CAPACITY_PERSONS) {
+		if(persons<0 || persons==0 || persons+ capacity >MAX_CAPACITY_PERSONS) {
 			throw new IllegalArgumentException("Sorry the persons cannot be negative number");
 		}
-
 		capacity += persons;
-
 	}
 	/**
 	 * get the value of capacity
@@ -217,10 +245,64 @@ public class ElevatorImp extends Observable implements Elevator{
 	 */
 	@Override
 	public void requestStop(int floor) {
-		panel.requestStop(floor, this);
 		if(floor<0) {
 			throw new IllegalArgumentException("Sorry the floor cannot be smaller than zero");
 		}
+		panel.requestStops(this,floor);
 	}
+    /**
+     * get the arrays from the simulator and pass the values to panel
+     */
+	@Override
+	public void requestStops(int... floors) {
+		for(int i=0;i<floors.length; i++) {
+			if(floors[i]<0) {
+				throw new IllegalArgumentException("Sorry the floor cannot be smaller than zero");
+			}
+		}
+		panel.requestStops(this, floors);
+	}
+	/**
+	 * get the elevatorID 
+	 */
+	@Override
+	public int id() {
+		return ID;
+	}
+	/**
+	 * check the state of elevator isIdle
+	 */
+	@Override
+	public boolean isIdle() {
+		return state.isIdle();
+	}
+	/**
+	 * get the hasCode
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ID;
+		return result;
+	}
+	/**
+	 * can be used to check whether the elevator is null
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ElevatorImp other = (ElevatorImp) obj;
+		if (ID != other.ID)
+			return false;
+		return true;
+	};
+	
+
 
 }

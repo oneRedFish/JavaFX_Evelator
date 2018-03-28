@@ -1,15 +1,15 @@
 #elevator,#empty,#target{
     -fx-min-height:30;
 	-fx-max-height:30;
-	-fx-min-width:200;
-	-fx-max-width:200;
+	-fx-min-width:150;
+	-fx-max-width:150;
 	-fx-border-color:#666;
 	-fx-border-width:1;
 	-fx-border-style:solid;
 	-fx-text-fill:#666;
 	-fx-alignment:center;
 }
-#note_c,#note_t,#note_p,#note_s,#fstate,#cFloor,#tFloor,#powerused{
+#note_c,#note_t,#note_p,#note_s,#note_id,#fstate,#cFloor,#tFloor,#powerused,#id{
 	-fx-text-fill:#fff;
 }
 #empty{
@@ -33,9 +33,10 @@
 	-fx-max-height:630;
 	-fx-min-width:200;
 	-fx-max-width:200;
-	-fx-background-color: #ccc;
-}
-#flow{
+	-fx-padding:5 10;
 	-fx-background-color: #666;
-	-fx-padding:10;
+	-fx-text-fill:#fff;
 }
+
+
+

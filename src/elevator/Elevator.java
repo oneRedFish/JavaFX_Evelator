@@ -1,5 +1,7 @@
 package elevator;
 
+import java.util.Observer;
+
 /**
  * <p>
  * {@link Elevator} guideline to be used.
@@ -30,6 +32,12 @@ public interface Elevator{
 	boolean isEmpty();
 	
 	/**
+	 * check if elevator is in {@link MovingState#Idle}
+	 * @return true if current elevator state is {@link MovingState#Idle}
+	 */
+	boolean isIdle();
+	
+	/**
 	 * get current {@link MovingState} of the {@link Elevator}
 	 * @return current {@link MovingState}
 	 */
@@ -54,14 +62,32 @@ public interface Elevator{
 	int getFloor();
 	
 	/**
+	 * Unique integer that identifies this {@link Elevator} object
+	 * @return unique identifier integer
+	 */
+	int id();
+	
+	/**
 	 * add number of persons to {@link Elevator}
 	 * @param persons - number of passengers getting on at current floor
 	 */
 	void addPersons( final int persons);
 
 	/**
-	 * represent the request made by one passenger inside of {@link Elevator}
+	 * represent the request made by one passenger inside of an {@link Elevator} object
 	 * @param floor - target floor
 	 */
 	void requestStop( final int floor);
+
+	/**
+	 * represent the request made by multiple passenger inside of an {@link Elevator} object
+	 * @param floors - target floors
+	 */
+	void requestStops( final int...floors);
+	
+	/**
+	 * add an {@link Observer} to this {@link Elevator}
+	 * @param observer - add to this {@link Elevator}, cannot be null
+	 */
+	void addObserver( Observer observer);
 }

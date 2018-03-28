@@ -117,4 +117,20 @@ public enum MovingState{
 	public boolean isGoingSlow(){
 		return this == SlowDown || this == SlowUp;
 	}
+
+	/**
+	 * return true if state is {@link MovingState#Idle}
+	 * @return true if state is {@link MovingState#Idle}
+	 */
+	public boolean isIdle(){
+		return this == Idle;
+	}
+
+	/**
+	 * return true if state is {@link MovingState#Off}
+	 * @return true if state is {@link MovingState#Off}
+	 */
+	public boolean isOff(){
+		return this == Off;
+	}
 }

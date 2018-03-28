@@ -15,9 +15,16 @@ import elevator.Elevator;
 public interface ElevatorPanel{
 
 	/**
-	 * called from {@link Elevator} to inform {@link ElevatorSystem} of new floor.
-	 * @param floor - new floor to which {@link Elevator} is moving.
+	 * called from {@link Elevator} to inform {@link ElevatorSystem} of request stop to new floor.
 	 * @param elevator - reference to the calling elevator.
+	 * @param floor - new floor to which {@link Elevator} will travel.
 	 */
-	void requestStop( final int floor, Elevator elevator);
+	void requestStop( final Elevator elevator, final int floor);
+
+	/**
+	 * called from {@link Elevator} to inform {@link ElevatorSystem} of multiple stop requests.
+	 * @param elevator - reference to the calling elevator.
+	 * @param floors - new stops to which {@link Elevator} will travel.
+	 */
+	void requestStops( final Elevator elevator, final int... floors);
 }

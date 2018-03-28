@@ -1,5 +1,8 @@
 package elevatorsystem;
 
+import java.util.Observer;
+import java.util.concurrent.ExecutorService;
+
 import elevator.Elevator;
 
 /**
@@ -51,8 +54,16 @@ public interface ElevatorSystem{
 	 * since there is only 1 {@link Elevator} no need for any arguments.
 	 * this method will likely change inn future designs.
 	 * @return current floor of only {@link Elevator}
+	 * @deprecated since assignment 2, should not be used anymore since there are more than one elevator
 	 */
+	@Deprecated
 	int getCurrentFloor();
+	
+	/**
+	 * total number of elevators regardless of their states
+	 * @return total number of elevators
+	 */
+	int getElevatorCount();
 	
 	/**
 	 * return total power consumed by all {@link Elevator} in the {@link ElevatorSystem}
@@ -65,4 +76,20 @@ public interface ElevatorSystem{
 	 * @param elevator - {@link Elevator} object to be added to {@link ElevatorSystem}
 	 */
 	void addElevator( Elevator elevator);
+	
+	/**
+	 * add an {@link Observer} to be attached to all {@link Elevator} objects
+	 * @param observer - to be added to all {@link Elevator}, cannot be null
+	 */
+	void addObserver( Observer observer);
+	
+	/**
+	 * shutdown {@link ExecutorService} which handles are threads
+	 */
+	void shutdown();
+
+	/**
+	 * start the main thread controlling {@link ElevatorSystem}
+	 */
+	void start();
 }
